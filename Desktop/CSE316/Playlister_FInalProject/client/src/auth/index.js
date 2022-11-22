@@ -69,8 +69,8 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.registerUser = async function(firstName, lastName, email, password, passwordVerify) {
-        const response = await api.registerUser(firstName, lastName, email, password, passwordVerify)
+    auth.registerUser = async function(username, email, firstName, lastName, password, passwordVerify) {
+        const response = await api.registerUser(username, email, firstName, lastName, password, passwordVerify)
         // .catch((err) => {
         //     throw err;
         // });      
@@ -81,7 +81,7 @@ function AuthContextProvider(props) {
                     user: response.data.user
                 }
             })
-            history.push("/");
+            history.push("/login/");
         }
     }
 
