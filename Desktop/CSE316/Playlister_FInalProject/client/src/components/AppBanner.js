@@ -99,27 +99,28 @@ export default function AppBanner() {
     }
 
     return (
-        <Box sx={{ flexGrow: 1}}>
-            <AppBar position="static" sx={{bgcolor: "#038b59"}}>
-                <Toolbar>
+        <Box sx={{ flexGrow: 1, height: "50px"}}>
+            <AppBar position="static" sx={{bgcolor: "#350929"}}>
+                <Toolbar variant='dense'>
                     <Typography                        
                         variant="h4"
                         noWrap
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block'  }, zIndex: "2" }}                        
                     >
-                        <img style={{height: "64px", float: "left"}} alt="logo" src={Logo} />
+                        <img style={{height: "40px", }} alt="logo" src={Logo} />
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
-                    <Box sx={{ display: { xs: 'none', md: 'flex' }, zIndex: "2" }}>
+                    <Box  sx={{ display: { xs: 'none', md: 'flex' }, zIndex: "2"}}>
                         <IconButton
-                            size="large"
+                            size="medium"
                             edge="end"
                             aria-haspopup="true"
                             aria-label="account of current user"
                             aria-controls={menuId}
                             onClick={handleProfileMenuOpen}
-                            // color="inherit"
+                            color="inherit"
+                            sx={{bgcolor: "black"}}
                         >
                             { getAccountMenu(auth.loggedIn) }
                         </IconButton>
