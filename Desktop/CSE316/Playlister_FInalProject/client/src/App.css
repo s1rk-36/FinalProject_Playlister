@@ -193,6 +193,7 @@ body {
 
 #list-selector-list {
   position: absolute;
+  
   left: 0%;
   top: 15%;
   width: 60%;
@@ -201,8 +202,41 @@ body {
   display: flex;
   flex-direction: column;
   overflow: scroll;
-  max-height: 80%;
+  max-height: 75%;
   overflow-x:initial;
+}
+
+.player-controls{
+  background-color: #123456;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  flex: 0 1 auto;
+  border-radius: 20px;
+}
+
+.player-buttons{
+  width: 80%;
+  background-color: white;
+  position: absolute;
+  bottom: 15px;
+
+}
+
+
+.player-header{
+  position:static;
+
+}
+
+.playlist-player{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  right: 1%;
+  top: 15%;
+  height: 75%;
+  max-height: 75%;
 }
 
 .list-card,

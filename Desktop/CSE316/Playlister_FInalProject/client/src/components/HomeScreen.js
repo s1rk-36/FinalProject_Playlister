@@ -2,12 +2,14 @@ import React, { useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
-
 import AddIcon from '@mui/icons-material/Add';
-import Fab from '@mui/material/Fab'
+import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
-import { AppBar, Grid } from '@mui/material';
+import { AppBar, Button, Grid } from '@mui/material';
+import YouTubePlayerExample from './YouTubePlaylisterReact/src/PlaylisterYouTubePlayer.js';
+import PlayerButtons from './PlayerButtons';
+
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -21,6 +23,7 @@ const HomeScreen = () => {
     }, []);
 
     function handleCreateNewList() {
+        console.log(document.getElementById("list-selector-list").offsetWidth);
         store.createNewList();
     }
     let listCard = "";
@@ -62,8 +65,30 @@ const HomeScreen = () => {
                 }
                 <MUIDeleteModal />
             </div>
+
+
+            <div className="playlist-player">
+                
+                <div className='player-header'>
+                    <Button variant="contained">Player</Button>
+                    <Button variant="contained">Comments</Button>
+                    
+                    <div className='youtube'>
+                    <YouTubePlayerExample></YouTubePlayerExample>
+                    </div>
+
+                </div>
+
+                <div className='player-controls'>
+                    <div className='player-buttons'>
+                    <Box sx={{ flexGrow: 1 }}><PlayerButtons /></Box>
+                    </div>
+                </div>
+
+                  
+            </div>
             
-            <div id="playlist-player"></div>
+                
             
         </div>
         )
