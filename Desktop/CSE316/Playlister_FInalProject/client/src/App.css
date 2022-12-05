@@ -226,8 +226,20 @@ body {
 
 .player-header{
   position:static;
-
 }
+
+.bottom-list-card{
+  position: absolute;
+  top: 75%;
+  width: 100%;
+}
+
+#workspace{
+  background-color: black;
+  height: 100%;
+  width: 100%;
+}
+
 
 .playlist-player{
   position: absolute;

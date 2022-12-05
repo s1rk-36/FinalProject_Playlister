@@ -30,6 +30,10 @@ getLoggedIn = async (req, res) => {
     }
 }
 
+continueAsGuest = async (req, res) => {
+    
+}
+
 loginUser = async (req, res) => {
     console.log("loginUser");
     try {

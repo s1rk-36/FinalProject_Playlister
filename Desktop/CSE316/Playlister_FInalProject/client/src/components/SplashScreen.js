@@ -2,11 +2,17 @@ import { Button, DialogContent, Typography } from "@mui/material";
 import Logo from "./Screen_Shot_2022-11-08_at_5.00.49_PM-removebg-preview (1).png";
 import Copyright from './Copyright';
 import { Link } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import AuthContext from '../auth'
 
 
 export default function SplashScreen() {
+    const { auth } = useContext(AuthContext);
 
-
+    const handleGuest = (event) => {
+        event.preventDefault();
+        auth.continueAsGuest();
+    }
 
     return (
         <div id="splash-screen">
@@ -18,7 +24,7 @@ export default function SplashScreen() {
             <div id="button-bar">
                 <Button id="splash-screen-button-log-in" component={Link} to='/login/'>Log In</Button>
                 <Button id="splash-screen-button-create-account" component={Link} to='/register/'>Create Accout</Button>
-                <Button id="splash-screen-button-guest">Continue as Guest</Button>
+                <Button id="splash-screen-button-guest" onClick={handleGuest}>Continue as Guest</Button>
             </div>
             <Copyright sx={{position: "absolute", bottom: "0", right: "0", padding: "10px"}} />
         </div>

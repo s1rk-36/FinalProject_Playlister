@@ -24,7 +24,7 @@ const HomeScreen = () => {
 
     function handleCreateNewList() {
         console.log(document.getElementById("list-selector-list").offsetWidth);
-        store.createNewList();
+        store.createNewList(0);
     }
     let listCard = "";
     if (store && store.idNamePairs.length > 0) {

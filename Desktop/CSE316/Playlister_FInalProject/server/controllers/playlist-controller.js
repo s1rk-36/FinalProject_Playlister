@@ -9,8 +9,8 @@ const User = require('../models/user-model');
 */
 createPlaylist = (req, res) => {
     const body = req.body;
+    // console.log(db.student.find({"jerry":{$exists:true}}))
     console.log("createPlaylist body: " + JSON.stringify(body));
-
     if (!body) {
         return res.status(400).json({
             success: false,
@@ -130,7 +130,15 @@ getPlaylistPairs = async (req, res) => {
                         let list = playlists[key];
                         let pair = {
                             _id: list._id,
-                            name: list.name
+                            name: list.name,          
+                            ownerEmail: list.ownerEmail,
+                            username: list.username,
+                            likes: list.likes,
+                            dislikes: list.dislikes,
+                            listens: list.listens,
+                            public: list.public,
+                            items: list.items,
+                            comments: list.comments,
                         };
                         pairs.push(pair);
                     }
@@ -186,6 +194,9 @@ updatePlaylist = async (req, res) => {
 
                     list.name = body.playlist.name;
                     list.songs = body.playlist.songs;
+                    if (body.comments) {
+                        top5List.comments = body.comments;
+                      }
                     list
                         .save()
                         .then(() => {

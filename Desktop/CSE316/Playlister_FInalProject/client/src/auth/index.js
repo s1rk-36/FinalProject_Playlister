@@ -13,10 +13,15 @@ export const AuthActionType = {
     REGISTER_USER: "REGISTER_USER"
 }
 
+
+let name = "";
+
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
-        loggedIn: false
+        loggedIn: false,
+        guest: false,
+        fullname: ""
     });
     const history = useHistory();
 
@@ -33,22 +38,30 @@ function AuthContextProvider(props) {
                     loggedIn: payload.loggedIn
                 });
             }
+            case AuthActionType.GUEST: {
+                return setAuth({
+                    loggedIn: true,
+                    guest: true
+                });
+            }
             case AuthActionType.LOGIN_USER: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
                 })
             }
             case AuthActionType.LOGOUT_USER: {
                 return setAuth({
                     user: null,
-                    loggedIn: false
+                    loggedIn: false,
+                    guest: false,
                 })
             }
             case AuthActionType.REGISTER_USER: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
+                    fullname: payload.fullname
                 })
             }
             default:
@@ -75,14 +88,23 @@ function AuthContextProvider(props) {
         //     throw err;
         // });      
         if (response.status === 200) {
+        
             authReducer({
                 type: AuthActionType.REGISTER_USER,
                 payload: {
-                    user: response.data.user
+                    user: response.data.user,
                 }
             })
             history.push("/login/");
         }
+    }
+
+    auth.continueAsGuest = async function(){
+        // const response = await api.continueAsGuest(email, password);
+        authReducer({
+            type: AuthActionType.GUEST,
+        })
+        history.push("/");
     }
 
     auth.loginUser = async function(email, password) {
@@ -117,6 +139,15 @@ function AuthContextProvider(props) {
         }
         console.log("user initials: " + initials);
         return initials;
+    }
+
+    auth.getFullName = function() {
+        let fullname = "";
+        if (auth.user) {
+            fullname += auth.user.firstName + " " + auth.user.lastName;
+        }
+        console.log("user initials: " + fullname);
+        return fullname;
     }
 
     return (

@@ -59,11 +59,12 @@ function GlobalStoreContextProvider(props) {
         newListCounter: 0,
         listNameActive: false,
         listIdMarkedForDeletion: null,
-        listMarkedForDeletion: null
+        listMarkedForDeletion: null,
     });
     const history = useHistory();
     document.onkeydown = store.handleKeyDown;
     console.log("inside useGlobalStore");
+
 
     // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
     const { auth } = useContext(AuthContext);
@@ -316,20 +317,44 @@ function GlobalStoreContextProvider(props) {
     }
 
     // THIS FUNCTION CREATES A NEW LIST
-    store.createNewList = async function () {
+    store.createNewList = async function (mode) {
         let newListName = "Untitled" + store.newListCounter;
-        const response = await api.createPlaylist(newListName, [], auth.user.email);
+        let counter = 2;
+        let check = true;
+        while(check){
+            for(let i = 0; i < this.idNamePairs.length; i++){
+                if(this.idNamePairs[i].name === newListName){
+                    newListName+="(" + counter.toString() + ")";
+                    counter += 1;
+                    break;
+                }
+                else if (i === this.idNamePairs.length - 1)
+                    check = false
+            }
+        }
+        let payload = {
+            name: newListName,
+            songs: [],
+            ownerEmail: auth.user.email,
+            username: auth.user.username,
+            likes: [],
+            dislikes: [],
+            listens: 0,
+            public: mode,
+            comments: [],
+          };
+        const response = await api.createPlaylist(payload);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
             let newList = response.data.playlist;
+            
             storeReducer({
                 type: GlobalStoreActionType.CREATE_NEW_LIST,
                 payload: newList
             }
             );
 
-            // IF IT'S A VALID LIST THEN LET'S START EDITING IT
             history.push("/playlist/" + newList._id);
         }
         else {
@@ -437,7 +462,7 @@ function GlobalStoreContextProvider(props) {
                         type: GlobalStoreActionType.SET_CURRENT_LIST,
                         payload: playlist
                     });
-                    history.push("/playlist/" + playlist._id);
+                    // history.push("/playlist/" + playlist._id);
                 }
             }
         }
@@ -571,6 +596,28 @@ function GlobalStoreContextProvider(props) {
         return (store.currentList !== null);
     }
     
+    store.addComment = async function (id, list) {
+        async function updateList(playlist) {
+          let response = await api.updatePlaylistById(playlist._id, playlist);
+          if (response.data.success) {
+            async function getListPairs(playlist) {
+              response = await api.getPlaylistPairs();
+              if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                storeReducer({
+                  type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                  payload: {
+                    idNamePairs: pairsArray,
+                    playlist: playlist,
+                  },
+                });
+              }
+            }
+            getListPairs(playlist);
+          }
+        }
+        updateList(list);
+      };
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
     store.setIsListNameEditActive = function () {
