@@ -14,6 +14,7 @@ import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import WorkspaceScreen from './WorkspaceScreen';
+import {Modal} from '@mui/material';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -30,6 +31,7 @@ function ListCard(props) {
     const { idNamePair, selected } = props;
     const [isActive, setIsActive] = useState(false);
     const [expandedId, setExpandedId] = useState(-1);
+    const [error, setError] = useState(false);
 
     let fullname = auth.getFullName();
 
@@ -68,6 +70,9 @@ function ListCard(props) {
         }
     };
 
+    const handleCloseModal = () => {
+        setError(false);
+    }
     
     function handleToggleEdit(event) {
         event.stopPropagation();
@@ -92,8 +97,19 @@ function ListCard(props) {
     function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
+            let check = true;
+            for(let i = 0; i < store.idNamePairs.length; i++){
+                if(store.idNamePairs[i].name === text){
+                    setError(true);
+                    break;
+                }
+                else if (i === store.idNamePairs.length - 1)
+                    check = false
+            }
+            if(check === false){
             store.changeListName(id, text);
             toggleEdit();
+            }
         }
     }
     function handleUpdateText(event) {
@@ -211,8 +227,39 @@ function ListCard(props) {
                 autoFocus
             />
     }
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        borderRadius: '10px',
+    };
     return (
-        cardElement
+        <div>
+        {cardElement}
+        <Modal
+            open={error}
+        >
+            <Box sx={style}>
+                <div className="modal-dialog">
+                <header className="dialog-header">
+                    This name already exists. Please enter a unique name.
+                </header>
+                <div id="confirm-cancel-container">
+                    <button
+                        id="dialog-no-button"
+                        className="modal-button"
+                        onClick={handleCloseModal}
+                    >Close</button>
+                </div>
+            </div>
+            </Box>
+        </Modal>
+        </div>
     );
 }
 
