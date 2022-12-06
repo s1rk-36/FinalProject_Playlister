@@ -29,9 +29,6 @@ const HomeScreen = () => {
     let listCard = "";
     if (store && store.idNamePairs.length > 0) {
         listCard = 
-            // <List 
-            // sx={{ width: '100%', left: '1%', bgcolor: 'background.paper', borderRadius: "25px", padding: 1 }}
-            // >
             
                 store.idNamePairs.map((pair) => (
                     <ListCard
@@ -40,8 +37,6 @@ const HomeScreen = () => {
                         selected={false}
                     />
                 ))
-            
-            // </List>;
     }
     return (
         <div id="playlist-selector">
@@ -89,7 +84,6 @@ const HomeScreen = () => {
             </div>
             
                 
-            
         </div>
         )
 }

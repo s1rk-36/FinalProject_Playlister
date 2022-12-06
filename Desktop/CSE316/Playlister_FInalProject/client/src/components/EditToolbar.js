@@ -36,30 +36,60 @@ function EditToolbar() {
                 disabled={!store.canAddNewSong()}
                 id='add-song-button'
                 onClick={handleAddNewSong}
-                variant="contained">
-                <AddIcon />
+                variant="contained"
+                sx={{margin: 1}}
+                >
+                Add
             </Button>
             <Button 
                 disabled={!store.canUndo()}
                 id='undo-button'
                 onClick={handleUndo}
-                variant="contained">
-                <UndoIcon />
+                variant="contained"
+                sx={{margin: 1}}
+                >
+                Undo
             </Button>
             <Button 
                 disabled={!store.canRedo()}
                 id='redo-button'
                 onClick={handleRedo}
-                variant="contained">
-                <RedoIcon />
+                variant="contained"
+                sx={{margin: 1}}
+                >
+                Redo
+            </Button>
+
+            <div id='extra-buttons'>
+            <Button 
+                // disabled={!store.canUndo()}
+                id='undo-button'
+                onClick={handleUndo}
+                variant="contained"
+                sx={{margin: 1}}
+                >
+                Publish
             </Button>
             <Button 
-                disabled={!store.canClose()}
-                id='close-button'
-                onClick={handleClose}
-                variant="contained">
-                <CloseIcon />
+                // disabled={!store.canRedo()}
+                id='redo-button'
+                onClick={handleRedo}
+                variant="contained"
+                sx={{margin: 1}}
+                >
+                Delete
             </Button>
+            <Button 
+                // disabled={!store.canUndo()}
+                id='undo-button'
+                onClick={handleUndo}
+                variant="contained"
+                sx={{margin: 1}}
+                >
+                Duplicate
+            </Button>
+            </div>
+
         </div>
     )
 }

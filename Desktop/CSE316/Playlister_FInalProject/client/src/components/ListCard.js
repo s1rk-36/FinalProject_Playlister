@@ -15,6 +15,7 @@ import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import WorkspaceScreen from './WorkspaceScreen';
 import {Modal} from '@mui/material';
+import EditToolbar from './EditToolbar';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -36,7 +37,6 @@ function ListCard(props) {
     let fullname = auth.getFullName();
 
     
-
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
@@ -50,6 +50,7 @@ function ListCard(props) {
             store.setCurrentList(id);
         }
     }
+
     let date = "";
 
     const handleExpandClick = (event, i) => {
@@ -126,12 +127,12 @@ function ListCard(props) {
     }
     let cardElement =
     <div id='cards'>
-    <Card>
-    <CardContent />
-    <CardActions disableSpacing>
+    <Card sx={{margin: 1}}>
+    <CardContent sx={{p: 0}}/>
+    <CardActions disableSpacing >
     <ListItem 
-            sx={{ display: 'flex', borderRadius: "20px", bgcolor: "white" }}
-            style={{fontSize: '18pt', height: "130px", marginLeft: "20px", marginBottom: "15px", width: "815px" }}
+            // sx={{ display: 'flex', bgcolor: "white" }}
+            style={{fontSize: '18pt', height: "100px", width: "815px" }}
             id={idNamePair._id}
             key={idNamePair._id}
             // button
@@ -177,19 +178,33 @@ function ListCard(props) {
                   
         </ListItem>
     </CardActions>
-    <Collapse in={expandedId === idNamePair._id} timeout="auto" sx={{display: 'flex', justifyContent: 'center' }} unmountOnExit>
-      <CardContent>
+
+    <Collapse 
+    in={expandedId === idNamePair._id} 
+    timeout="auto" 
+    // sx={{display: 'flex', justifyContent: 'center' }} 
+    unmountOnExit
+    sx={{bgcolor: 'blue', borderRadius: '20px', marginLeft: 1, marginRight: 1,}}
+    >
+      <CardContent sx={{ height: '300px', display: 'flex', flexDirection: 'column', overflow: 'scroll', 
+        position: 'relative'}}>
+
         <WorkspaceScreen></WorkspaceScreen>
       </CardContent>
+    <EditToolbar></EditToolbar>
+
+
     </Collapse>
-    <Box 
+
+
+        <Box 
             sx={{display: 'inline-block', float: 'left',  p: 1,}}
             >
                 <Typography fontSize="12pt">Published: </Typography>
             </Box>
 
             <Box 
-            sx={{display: 'inline-block', float: 'left',  p: 1,}}
+            sx={{display: 'inline-block', right: 0,  p: 1,}}
             >
                 <Typography fontSize="12pt">Listens: </Typography>
             </Box>
@@ -204,7 +219,8 @@ function ListCard(props) {
                         >
                         <KeyboardDoubleArrowDownIcon style={{fontSize:'20pt'}} />
                     </IconButton>
-                </Box>
+        </Box>
+
     </Card>
   </div>
 
