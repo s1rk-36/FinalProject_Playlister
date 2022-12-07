@@ -116,8 +116,6 @@ function ListCard(props) {
     const handleExpandClick = (event, i) => {
         event.stopPropagation();
         if(store.currentList){
-        // handleCloseClick(store.currentList._id);
-        // setExpandedId(expandedId === i ? -1 : i);
         store.setCurrentList(i);
 
         }
@@ -130,7 +128,8 @@ function ListCard(props) {
     };
 
     const handleDuplicate = (event, i) => {
-        console.log(store.currentList);
+        event.stopPropagation();
+        store.createNewList(0, i);
     }
 
     const handleCloseModal = () => {
@@ -323,7 +322,7 @@ function ListCard(props) {
         <Box 
             sx={{display: 'inline-block', float: 'left',  p: 1,}}
             >
-                <Typography fontSize="12pt"> Published: </Typography>
+                <Typography fontSize="12pt"> Published: <b style={{color: 'blue'}}>{idNamePair.date}</b> </Typography>
         </Box>
 
         <Box 

@@ -194,6 +194,7 @@ updatePlaylist = async (req, res) => {
 
                     list.name = body.playlist.name;
                     list.songs = body.playlist.songs;
+                    list.date = body.playlist.date;
                     if(body.playlist.public)
                         list.public = body.playlist.public;
                     console.log("the body is someee" + body.playlist.public);

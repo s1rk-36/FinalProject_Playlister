@@ -320,7 +320,11 @@ function GlobalStoreContextProvider(props) {
     }
 
     // THIS FUNCTION CREATES A NEW LIST
-    store.createNewList = async function (mode) {
+    store.createNewList = async function (mode, dupPlaylist = null) {
+        let payload = {};
+
+        if(!dupPlaylist){
+
         let newListName = "Untitled" + store.newListCounter;
         let counter = 2;
         let check = true;
@@ -339,7 +343,7 @@ function GlobalStoreContextProvider(props) {
             }
         }
         newListName = tempName;
-        let payload = {
+        payload = {
             name: newListName,
             songs: [],
             ownerEmail: auth.user.email,
@@ -351,6 +355,47 @@ function GlobalStoreContextProvider(props) {
             comments: [],
             date: ''
           };
+        }
+        else{
+            
+            let response = await api.getPlaylistById(dupPlaylist);
+        
+            if (response.data.success) {
+                dupPlaylist = response.data.playlist;
+                let counter = 2;
+                let check = true;
+                let tempName = dupPlaylist.name;
+                while(check){
+                    if(this.idNamePairs.length === 0)
+                        break;
+                    for(let i = 0; i < this.idNamePairs.length; i++){
+                        if(this.idNamePairs[i].name === tempName){
+                            tempName = dupPlaylist.name + "(" + counter.toString() + ")";
+                            counter += 1;
+                            break;
+                        }
+                        else if (i === this.idNamePairs.length - 1)
+                            check = false
+                    }
+                }
+
+            let newListName = tempName;
+            payload = {
+                name: newListName,
+                songs: dupPlaylist.songs,
+                ownerEmail: auth.user.email,
+                username: auth.user.username,
+                likes: [],
+                dislikes: [],
+                listens: 0,
+                public: false,
+                comments: [],
+                date: ''
+            };
+            }
+        }
+
+
         const response = await api.createPlaylist(payload);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
@@ -395,6 +440,10 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 let playlist = response.data.playlist;
                 playlist.public = true;
+
+                let d = new Date();
+                playlist.date = d.toDateString();
+
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
                     if (response.data.success) {
@@ -424,6 +473,7 @@ function GlobalStoreContextProvider(props) {
         }
         asyncPublishPlaylist(id);
     }
+
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
     // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
     // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
