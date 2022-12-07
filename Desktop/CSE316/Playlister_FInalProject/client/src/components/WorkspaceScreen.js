@@ -24,6 +24,8 @@ function WorkspaceScreen() {
     else if (store.isRemoveSongModalOpen() && store.currentList !== null) {
         modalJSX = <MUIRemoveSongModal />;
     }
+    
+    
     if(store.currentList)
     return (
         <div id='workspace'>

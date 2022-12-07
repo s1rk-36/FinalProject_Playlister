@@ -35,7 +35,7 @@ function ListCard(props) {
     const [error, setError] = useState(false);
     const [listOpen, setListOpen] = useState(false);
 
-    let fullname = auth.getFullName();
+    let name = idNamePair.fullName;
 
     function handleAddNewSong(event, id) {
         store.addNewSong(id);
@@ -64,7 +64,7 @@ function ListCard(props) {
             console.log("load " + event.target.id);
 
             // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
+            store.loadSongsToPlay(id);
         }
     }
 
@@ -75,7 +75,6 @@ function ListCard(props) {
         sx={{display: 'inline-block', float: 'right', marginRight:'30px',}}
     >
         <IconButton
-            // disabled={store.currentList}
             onClick={(event) => {handleCloseClick(idNamePair._id)}}
             aria-expanded={expandedId === idNamePair._id}
             aria-label="show less"
@@ -100,12 +99,21 @@ function ListCard(props) {
 
     let workspace = "";
     let actionButtons = ""
-    if(idNamePair.public){
+    let deleteCase = "";
+    if(idNamePair.public ){
         actionButtons = "hidden";
     }else{
-        actionButtons = ""
-
+        actionButtons = "";
     }
+
+    // if(auth.loggedIn){
+    //     if(idNamePair.ownerEmail !== auth.user.email){
+    //         deleteCase = "hidden";
+
+    //     } else{
+    //         deleteCase = "";
+    //     }
+    // }
 
     const handleCloseClick = (i) => {
         setExpandedId(expandedId === i ? -1 : i);
@@ -115,16 +123,15 @@ function ListCard(props) {
 
     const handleExpandClick = (event, i) => {
         event.stopPropagation();
-        if(store.currentList){
-        store.setCurrentList(i);
-
-        }
-        else{
-            setExpandedId(expandedId === i ? -1 : i);
+        // if(store.currentList){
+        //     store.setCurrentList(i);
+        // }
+        // else{
         
-            store.setCurrentList(i);
-        }
+        // }
+        setExpandedId(expandedId === i ? -1 : i);
         setListOpen(true);
+        store.setCurrentList(i);
     };
 
     const handleDuplicate = (event, i) => {
@@ -200,14 +207,14 @@ function ListCard(props) {
             onDoubleClick={(event) => {
                 handleToggleEdit(event)
             }}
-            // onClick={(event) => {
-            //     handleLoadList(event, idNamePair._id)
-            // }}  
+            onClick={(event) => {
+                handleLoadList(event, idNamePair._id)
+            }}  
             >
 
             <Box sx={{ p: 1, flexGrow: 1, position: 'absolute', top: '0' }}>{idNamePair.name}</Box>
             <Box sx={{ p: 1, flexGrow: 1, }}>
-                <Typography variant='h7' fontSize="12pt">By: {fullname}</Typography>
+                <Typography variant='h7' fontSize="12pt">By: {name}</Typography>
             </Box>
             
             <Box sx={{ p: 1 }}>
@@ -298,7 +305,7 @@ function ListCard(props) {
                     handleDeleteList(event, idNamePair._id)
                 }} 
                 variant="contained"
-                sx={{margin: 1}}
+                sx={{margin: 1, visibility: deleteCase}}
                 >
                 Delete
             </Button>

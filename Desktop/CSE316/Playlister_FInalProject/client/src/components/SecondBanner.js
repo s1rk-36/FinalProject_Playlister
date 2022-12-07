@@ -16,6 +16,49 @@ import { Typography } from '@mui/material';
 export default function SecondBanner() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
+    const [searchResult, setSearchResult] = useState("");
+
+    let homeBorder = ''
+    let userPlaylists = ''
+    let users = ''
+
+    if(store.searchMode === 'home'){
+        homeBorder = 'inset'
+        users = ''
+        userPlaylists = ''
+        
+    } 
+    else if(store.searchMode === 'allUserPlaylists'){
+        homeBorder = ''
+        users = ''
+        userPlaylists = 'inset'
+    }
+    else{
+        homeBorder = ''
+        users = 'inset'
+        userPlaylists = ''
+    }
+
+    const handleHomeClick = (mode) =>{
+        store.displayUserOwnedLists();
+        store.setSearchMode(mode);
+        setSearchResult('');
+    }
+    
+    const handleAllUserPlaylists = (mode) =>{
+        store.setSearchMode(mode);
+        setSearchResult('');
+    }
+
+    const handleAllUsers = (mode) =>{
+        store.setSearchMode(mode);
+        setSearchResult('');
+    }
+
+    const handleSubmit = () => {
+        console.log(searchResult)
+        store.displaySearchResults(searchResult);
+    }
 
     if (auth.loggedIn){
     return (
@@ -26,29 +69,51 @@ export default function SecondBanner() {
                         <HomeIcon
                             edge="end"
                             aria-label="home screen view"
-                            sx={{fontSize: 45, paddingLeft: 2, color: "black", cursor: "pointer"}}
+                            onClick={(event) => {handleHomeClick('home')}}
+                            sx={{fontSize: 45, marginLeft: 2, color: "black", cursor: "pointer",
+                             borderColor: 'blue', borderStyle: homeBorder, borderRadius: '20px'}}
                         >
                         </HomeIcon>
                         <GroupsIcon
                         aria-label="all lists"
-                        sx={{fontSize: 45, paddingLeft: 1, color: "black", cursor: "pointer"}}
+                        onClick={(event) => {handleAllUserPlaylists('allUserPlaylists')}}
+
+                        sx={{fontSize: 45, marginLeft: 1, color: "black", cursor: "pointer",
+                            borderColor: 'blue', borderStyle: userPlaylists, borderRadius: '20px'}}
                         >
                         </GroupsIcon>
                         <PersonIcon
                         aria-label="owned lists"
-                        sx={{fontSize: 45, paddingLeft: 1, color: "black", cursor: "pointer"}}
+                        onClick={(event) => {handleAllUsers('allUsers')}}
+
+                        sx={{fontSize: 45, marginLeft: 1, color: "black", cursor: "pointer",
+                            borderColor: 'blue', borderStyle: users, borderRadius: '20px'}}
                         >
                         </PersonIcon>
 
+ 
                         <TextField
                         id="searc-bar" 
+                        value={searchResult}
                         placeholder='Search'
                         variant="outlined"
-                        sx={{bgcolor: "white", width: "800px", marginLeft: 10}}
+                        sx={{bgcolor: "white", width: "800px", marginLeft: 10, borderRadius: "10px"}}
                         fullWidth="40%"
-                        
-                        ></TextField> 
-    
+                        onKeyPress={(ev) => {
+
+                            if (ev.key === 'Enter') {
+                              // Do code here
+                              ev.preventDefault();
+                              handleSubmit(searchResult);
+                            }
+                          }}
+                        onChange={(ev)=>{
+                            setSearchResult(ev.target.value);
+                        }}
+                        >
+                        </TextField> 
+                       
+
                         <Typography 
                         variant='h5'
                         marginTop= '10px'

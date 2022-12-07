@@ -43,6 +43,7 @@ export default function RegisterScreen() {
     }
 
     return (
+        <Grid container component="main" sx={{ bgcolor: 'white' }}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -150,8 +151,8 @@ export default function RegisterScreen() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 5 }} />
+                <Copyright sx={{ mt: 5, color: 'black' }} />
             </Container>
-            
+            </Grid>
     );
 }

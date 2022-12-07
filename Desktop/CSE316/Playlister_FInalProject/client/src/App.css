@@ -212,20 +212,26 @@ body {
 }
 
 .player-controls{
-  background-color: #123456;
-  height: 100%;
+  background-color: #7c4cf6;
+  height: 50%;
   width: 100%;
   position: relative;
   flex: 0 1 auto;
   border-radius: 20px;
+  /* display: flex; */
+  justify-content: center;
 }
 
 .player-buttons{
-  width: 80%;
-  background-color: white;
+  width: 85%;
   position: absolute;
+  border-radius: 10px;
   bottom: 15px;
-
+  background-color: #4d5fe5;
+  padding: 10px;
+  justify-content: center;
+  display: flex;
+  
 }
 
 
@@ -255,6 +261,7 @@ body {
   top: 15%;
   height: 75%;
   max-height: 75%;
+  width: 39%;
 }
 
 .list-card,
@@ -427,6 +434,7 @@ input {
   visibility: visible;
   opacity: 1;
 }
+
 
 .modal-north-edit {
   font-size:32pt;

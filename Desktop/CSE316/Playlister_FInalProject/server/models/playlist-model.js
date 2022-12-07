@@ -21,6 +21,8 @@ const playlistSchema = new Schema(
         comments: { type: [String], required: false },
         public: { type: Boolean, required: false },
         date: { type: String, required: false },
+        fullName: { type: String, required: true },
+
     },
     { timestamps: true },
 )
