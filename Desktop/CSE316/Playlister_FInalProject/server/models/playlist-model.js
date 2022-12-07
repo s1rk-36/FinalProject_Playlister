@@ -20,6 +20,7 @@ const playlistSchema = new Schema(
         listens: { type: Number, required: false },
         comments: { type: [String], required: false },
         public: { type: Boolean, required: false },
+        date: { type: String, required: false },
     },
     { timestamps: true },
 )

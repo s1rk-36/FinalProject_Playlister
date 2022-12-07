@@ -14,7 +14,7 @@ import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import WorkspaceScreen from './WorkspaceScreen';
-import {Modal} from '@mui/material';
+import {Modal, Button} from '@mui/material';
 import EditToolbar from './EditToolbar';
 
 /*
@@ -33,10 +33,27 @@ function ListCard(props) {
     const [isActive, setIsActive] = useState(false);
     const [expandedId, setExpandedId] = useState(-1);
     const [error, setError] = useState(false);
+    const [listOpen, setListOpen] = useState(false);
 
     let fullname = auth.getFullName();
 
-    
+    function handleAddNewSong(event, id) {
+        store.addNewSong(id);
+    }
+    function handleUndo(event, id) {
+        store.undo();
+    }
+    function handleRedo(event,id ) {
+        store.redo();
+    }
+
+    async function handleDeleteList(event, id) {
+        event.stopPropagation();
+        let _id = event.target.id;
+        _id = ("" + _id).substring("delete-list-".length);
+        store.markListForDeletion(id);
+    }
+
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
@@ -51,25 +68,70 @@ function ListCard(props) {
         }
     }
 
-    let date = "";
+    let collapseUPorDown = "";
+    if(listOpen){
+        collapseUPorDown =        
+        <Box 
+        sx={{display: 'inline-block', float: 'right', marginRight:'30px',}}
+    >
+        <IconButton
+            // disabled={store.currentList}
+            onClick={(event) => {handleCloseClick(idNamePair._id)}}
+            aria-expanded={expandedId === idNamePair._id}
+            aria-label="show less"
+            >
+            <KeyboardDoubleArrowUpIcon style={{fontSize:'20pt'}} />
+        </IconButton>
+    </Box>
+    }
+    else{
+        collapseUPorDown =        <Box 
+        sx={{display: 'inline-block', float: 'right', marginRight:'30px',}}
+    >
+        <IconButton
+            onClick={(event) => {handleExpandClick(event, idNamePair._id)}}
+            aria-expanded={expandedId === idNamePair._id}
+            aria-label="show more"
+            >
+            <KeyboardDoubleArrowDownIcon style={{fontSize:'20pt'}} />
+        </IconButton>
+    </Box>
+    }
+
+    let workspace = "";
+    let actionButtons = ""
+    if(idNamePair.public){
+        actionButtons = "hidden";
+    }else{
+        actionButtons = ""
+
+    }
+
+    const handleCloseClick = (i) => {
+        setExpandedId(expandedId === i ? -1 : i);
+        store.closeCurrentList();
+        setListOpen(false);
+    }
 
     const handleExpandClick = (event, i) => {
         event.stopPropagation();
-        setExpandedId(expandedId === i ? -1 : i);
-        if (!event.target.disabled) {
-            let _id = event.target.id;
-            if (_id.indexOf('list-card-text-') >= 0)
-                _id = ("" + _id).substring("list-card-text-".length);
+        if(store.currentList){
+        // handleCloseClick(store.currentList._id);
+        // setExpandedId(expandedId === i ? -1 : i);
+        store.setCurrentList(i);
 
-            console.log("load " + event.target.id);
-
-            // CHANGE THE CURRENT LIST
-            if(!store.currentList)
-                store.setCurrentList(i);
-            else
-                store.closeCurrentList();
         }
+        else{
+            setExpandedId(expandedId === i ? -1 : i);
+        
+            store.setCurrentList(i);
+        }
+        setListOpen(true);
     };
+
+    const handleDuplicate = (event, i) => {
+        console.log(store.currentList);
+    }
 
     const handleCloseModal = () => {
         setError(false);
@@ -88,12 +150,6 @@ function ListCard(props) {
         setEditActive(newActive);
     }
 
-    async function handleDeleteList(event, id) {
-        event.stopPropagation();
-        let _id = event.target.id;
-        _id = ("" + _id).substring("delete-list-".length);
-        store.markListForDeletion(id);
-    }
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
@@ -113,6 +169,12 @@ function ListCard(props) {
             }
         }
     }
+
+    function handlePublishPlaylist(event, id) {
+        event.stopPropagation();
+        store.publishPlaylist(id);
+    }
+
     function handleUpdateText(event) {
         setText(event.target.value);
     }
@@ -149,18 +211,9 @@ function ListCard(props) {
                 <Typography variant='h7' fontSize="12pt">By: {fullname}</Typography>
             </Box>
             
-            {/* <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} 
-                    aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'30pt'}} />
-                </IconButton>
-            </Box> */}
-            
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
+                        // handleDeleteList(event, idNamePair._id)
                     }} 
                     aria-label='like'>
                     <ThumbUpOffAltIcon style={{fontSize:'30pt'}} />
@@ -169,7 +222,7 @@ function ListCard(props) {
 
             <Box sx={{ p: 1, float: "right", position: 'relative', display: "inline-block" }}>
                 <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
+                        // handleDeleteList(event, idNamePair._id)
                     }} 
                     aria-label='dislike'>
                     <ThumbDownOffAltIcon style={{fontSize:'30pt'}} />
@@ -186,12 +239,82 @@ function ListCard(props) {
     unmountOnExit
     sx={{bgcolor: 'blue', borderRadius: '20px', marginLeft: 1, marginRight: 1,}}
     >
-      <CardContent sx={{ height: '300px', display: 'flex', flexDirection: 'column', overflow: 'scroll', 
+    <CardContent sx={{ height: '300px', display: 'flex', flexDirection: 'column', overflow: 'scroll', 
         position: 'relative'}}>
 
         <WorkspaceScreen></WorkspaceScreen>
-      </CardContent>
-    <EditToolbar></EditToolbar>
+    </CardContent>
+    <div id='edit-toolbar'>
+
+    <div id="edit-toolbar">
+            <Button
+                id='add-song-button'
+                onClick={(event) => {
+                    handleAddNewSong(event, idNamePair._id)
+                }}
+                variant="contained"
+                sx={{margin: 1, visibility: actionButtons}}
+                >
+                Add
+            </Button>
+            <Button 
+                disabled={!store.canUndo()}
+                id='undo-button'
+                onClick={(event) => {
+                    handleUndo(event, idNamePair._id)
+                }}
+                variant="contained"
+                sx={{margin: 1, visibility: actionButtons}}
+                >
+                Undo
+            </Button>
+            <Button 
+                disabled={!store.canRedo()}
+                id='redo-button'
+                onClick={(event) => {
+                    handleRedo(event, idNamePair._id)
+                }}
+                variant="contained"
+                sx={{margin: 1, visibility: actionButtons}}
+                >
+                Redo
+            </Button>
+
+
+    </div>
+            <Button 
+                id='publish-button'
+                onClick={(event) => {
+                    handlePublishPlaylist(event, idNamePair._id)
+                }}
+                variant="contained"
+                sx={{margin: 1, visibility: actionButtons}}
+                >
+                Publish
+            </Button>
+            <Button 
+                // disabled={!store.canRedo()}
+                id='delete-button'
+                onClick={(event) => {
+                    handleDeleteList(event, idNamePair._id)
+                }} 
+                variant="contained"
+                sx={{margin: 1}}
+                >
+                Delete
+            </Button>
+            <Button 
+                // disabled={!store.canUndo()}
+                id='duplicate-button'
+                onClick={(event) => {
+                    handleDuplicate(event, idNamePair._id)
+                }}
+                variant="contained"
+                sx={{margin: 1}}
+                >
+                Duplicate
+            </Button>
+            </div>
 
 
     </Collapse>
@@ -200,26 +323,16 @@ function ListCard(props) {
         <Box 
             sx={{display: 'inline-block', float: 'left',  p: 1,}}
             >
-                <Typography fontSize="12pt">Published: </Typography>
-            </Box>
-
-            <Box 
-            sx={{display: 'inline-block', right: 0,  p: 1,}}
-            >
-                <Typography fontSize="12pt">Listens: </Typography>
-            </Box>
-
-                <Box 
-                    sx={{display: 'inline-block', float: 'right', marginRight:'30px',p: 1,}}
-                >
-                    <IconButton
-                        onClick={(event) => {handleExpandClick(event, idNamePair._id)}}
-                        aria-expanded={expandedId === idNamePair._id}
-                        aria-label="show more"
-                        >
-                        <KeyboardDoubleArrowDownIcon style={{fontSize:'20pt'}} />
-                    </IconButton>
+                <Typography fontSize="12pt"> Published: </Typography>
         </Box>
+
+        <Box 
+            sx={{display: 'inline-block',  p: 1,}}
+            >
+                <Typography fontSize="12pt"> Listens: </Typography>
+        </Box>
+
+                {collapseUPorDown}
 
     </Card>
   </div>

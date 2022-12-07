@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import React, { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 
@@ -42,6 +43,17 @@ function SongCard(props) {
     }
 
     let cardClass = "list-card unselected-list-card";
+    if(store.currentList.public){
+        return(
+            <div
+            key={index}
+            id={'song-' + index + '-card'}
+            className='list-card-published'
+        >
+            {index + 1}. {song.title} by {song.artist}
+        </div>
+        );
+    }else{
     return (
         <div
             key={index}
@@ -55,13 +67,7 @@ function SongCard(props) {
             draggable="true"
             onDoubleClick={handleClick}
         >
-            {index + 1}.
-            <a
-                id={'song-' + index + '-link'}
-                className="song-link"
-                href={"https://www.youtube.com/watch?v=" + song.youTubeId}>
-                {song.title} by {song.artist}
-            </a>
+            {index + 1}. {song.title} by {song.artist}
             <input
                 type="button"
                 id={"remove-song-" + index}
@@ -70,7 +76,7 @@ function SongCard(props) {
                 onClick={handleRemoveSong}
             />
         </div>
-    );
+    );  
 }
-
+}
 export default SongCard;

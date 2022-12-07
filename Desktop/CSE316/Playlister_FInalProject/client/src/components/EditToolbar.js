@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom';
     
     @author McKilla Gorilla
 */
-function EditToolbar() {
+function EditToolbar(props) {
     const { store } = useContext(GlobalStoreContext);
     const history = useHistory();
 
@@ -26,71 +26,41 @@ function EditToolbar() {
     function handleRedo() {
         store.redo();
     }
-    function handleClose() {
-        history.push("/");
-        store.closeCurrentList();
-    }
+
+
     return (
-        <div id="edit-toolbar">
-            <Button
-                disabled={!store.canAddNewSong()}
-                id='add-song-button'
-                onClick={handleAddNewSong}
-                variant="contained"
-                sx={{margin: 1}}
-                >
-                Add
-            </Button>
-            <Button 
-                disabled={!store.canUndo()}
-                id='undo-button'
-                onClick={handleUndo}
-                variant="contained"
-                sx={{margin: 1}}
-                >
-                Undo
-            </Button>
-            <Button 
-                disabled={!store.canRedo()}
-                id='redo-button'
-                onClick={handleRedo}
-                variant="contained"
-                sx={{margin: 1}}
-                >
-                Redo
-            </Button>
+        null
+        // <div id="edit-toolbar">
+        //     <Button
+        //         // disabled={!store.canAddNewSong()}
+        //         id='add-song-button'
+        //         onClick={handleAddNewSong}
+        //         variant="contained"
+        //         sx={{margin: 1}}
+        //         >
+        //         Add
+        //     </Button>
+        //     <Button 
+        //         disabled={!store.canUndo()}
+        //         id='undo-button'
+        //         onClick={handleUndo}
+        //         variant="contained"
+        //         sx={{margin: 1}}
+        //         >
+        //         Undo
+        //     </Button>
+        //     <Button 
+        //         disabled={!store.canRedo()}
+        //         id='redo-button'
+        //         onClick={handleRedo}
+        //         variant="contained"
+        //         sx={{margin: 1}}
+        //         >
+        //         Redo
+        //     </Button>
 
-            <div id='extra-buttons'>
-            <Button 
-                // disabled={!store.canUndo()}
-                id='undo-button'
-                onClick={handleUndo}
-                variant="contained"
-                sx={{margin: 1}}
-                >
-                Publish
-            </Button>
-            <Button 
-                // disabled={!store.canRedo()}
-                id='redo-button'
-                onClick={handleRedo}
-                variant="contained"
-                sx={{margin: 1}}
-                >
-                Delete
-            </Button>
-            <Button 
-                // disabled={!store.canUndo()}
-                id='undo-button'
-                onClick={handleUndo}
-                variant="contained"
-                sx={{margin: 1}}
-                >
-                Duplicate
-            </Button>
-            </div>
 
-        </div>
+        // </div>
     )
 }
 

@@ -117,6 +117,7 @@ body {
   background-color: transparent;
   width: 95%;
   margin-left: 20px;
+  display: inline-flex;
 }
 
 #extra-buttons{
@@ -263,6 +264,12 @@ body {
   margin: 10px;
   padding: 20px;
   border-radius: 25px;
+}
+
+.list-card-published{
+  color: rgb(178, 209, 8);
+  font-size: 25pt;
+  margin: 10px;
 }
 
 .list-card:aria-disabled,

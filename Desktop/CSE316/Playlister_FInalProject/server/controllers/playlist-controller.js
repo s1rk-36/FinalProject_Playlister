@@ -1,3 +1,4 @@
+const { baseModelName } = require('../models/playlist-model');
 const Playlist = require('../models/playlist-model')
 const User = require('../models/user-model');
 /*
@@ -9,7 +10,6 @@ const User = require('../models/user-model');
 */
 createPlaylist = (req, res) => {
     const body = req.body;
-    // console.log(db.student.find({"jerry":{$exists:true}}))
     console.log("createPlaylist body: " + JSON.stringify(body));
     if (!body) {
         return res.status(400).json({
@@ -136,9 +136,9 @@ getPlaylistPairs = async (req, res) => {
                             likes: list.likes,
                             dislikes: list.dislikes,
                             listens: list.listens,
-                            public: list.public,
-                            items: list.items,
                             comments: list.comments,
+                            public: list.public,
+                            date: list.date,
                         };
                         pairs.push(pair);
                     }
@@ -194,8 +194,12 @@ updatePlaylist = async (req, res) => {
 
                     list.name = body.playlist.name;
                     list.songs = body.playlist.songs;
+                    if(body.playlist.public)
+                        list.public = body.playlist.public;
+                    console.log("the body is someee" + body.playlist.public);
+
                     if (body.comments) {
-                        top5List.comments = body.comments;
+                        list.comments = body.comments;
                       }
                     list
                         .save()
@@ -230,5 +234,5 @@ module.exports = {
     getPlaylistById,
     getPlaylistPairs,
     getPlaylists,
-    updatePlaylist
+    updatePlaylist,
 }
