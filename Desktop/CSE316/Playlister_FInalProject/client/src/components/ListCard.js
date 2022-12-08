@@ -34,6 +34,10 @@ function ListCard(props) {
     const [expandedId, setExpandedId] = useState(-1);
     const [error, setError] = useState(false);
     const [listOpen, setListOpen] = useState(false);
+    const [liked, setLiked] = useState("");
+    const [disliked, setDisliked] = useState("");
+    const [numLikes, setLikes] = useState(0);
+    const [numDislikes, setNumDislikes] = useState(0);
 
     let name = idNamePair.fullName;
 
@@ -104,13 +108,15 @@ function ListCard(props) {
     </Box>
     }
 
-    let workspace = "";
+    let likeB = "";
     let actionButtons = ""
     let deleteCase = "";
     if(idNamePair.public ){
         actionButtons = "hidden";
+        likeB = ""
     }else{
         actionButtons = "";
+        likeB = "hidden"
     }
 
     // if(auth.loggedIn){
@@ -163,6 +169,50 @@ function ListCard(props) {
         setEditActive(newActive);
     }
 
+    function handleLikePlaylis(event, idNamePair) {
+        event.stopPropagation();
+        setLiked('black');
+        setDisliked('');
+        if(idNamePair.likes.includes(idNamePair.fullName)){
+
+        }
+        else if(idNamePair.dislikes.includes(idNamePair.fullName)){
+            let x = 0
+            for(let i=0; i < idNamePair.dislikes.length; i++){
+                if(idNamePair.dislikes[i] === idNamePair.fullName){
+                    x = i;
+                }
+            }
+            idNamePair.dislikes.splice(x, 1);
+            store.incrementLike(idNamePair);
+
+        } else{
+            store.incrementLike(idNamePair);
+        }
+    }
+
+    function handleDislikes(event, idNamePair) {
+        event.stopPropagation();
+        setLiked('');
+        setDisliked('black');
+        if(idNamePair.likes.includes(idNamePair.fullName)){
+            let x = 0
+            for(let i=0; i < idNamePair.likes.length; i++){
+                if(idNamePair.likes[i] === idNamePair.fullName){
+                    x = i;
+                }
+            }
+            idNamePair.likes.splice(x, 1);
+            store.incrementDislikes(idNamePair);
+
+        }else if(idNamePair.dislikes.includes(idNamePair.fullName)){
+
+        } else{
+            store.incrementDislikes(idNamePair);
+        }
+
+    }
+
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
@@ -200,6 +250,9 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
+
+
+
     let cardElement =
     <div id='cards'>
     <Card sx={{margin: 1, borderColor: 'purple', borderStyle: highlighted}}
@@ -227,19 +280,21 @@ function ListCard(props) {
             
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={(event) => {
-                        // handleDeleteList(event, idNamePair._id)
+                        handleLikePlaylis(event, idNamePair)
                     }} 
                     aria-label='like'>
-                    <ThumbUpOffAltIcon style={{fontSize:'30pt'}} />
+                    <ThumbUpAltIcon style={{fontSize:'30pt', color:liked, visibility: likeB}} />
+                    <Typography sx={{margin: 1, fontSize: '22pt', visibility: likeB}}>{idNamePair.likes.length}</Typography>
                 </IconButton>
             </Box>
 
             <Box sx={{ p: 1, float: "right", position: 'relative', display: "inline-block" }}>
                 <IconButton onClick={(event) => {
-                        // handleDeleteList(event, idNamePair._id)
+                        handleDislikes(event, idNamePair)
                     }} 
                     aria-label='dislike'>
-                    <ThumbDownOffAltIcon style={{fontSize:'30pt'}} />
+                    <ThumbDownAltIcon style={{fontSize:'30pt', color: disliked, visibility: likeB}} />
+                    <Typography sx={{margin: 1, fontSize: '22pt', visibility: likeB}}>{idNamePair.dislikes.length}</Typography>
                 </IconButton>
             </Box>
                   

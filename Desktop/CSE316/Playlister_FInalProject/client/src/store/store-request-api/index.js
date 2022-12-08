@@ -37,6 +37,9 @@ export const updatePlaylistById = (id, playlist) => {
 export const getAllUsersPlaylists = (payload) => {
     return api.put(`/playlistUserpairs/`, payload)
 }
+export const getAllUsers = (payload) => {
+    return api.put(`/playlistUsers/`, payload)
+}
 
 
 const apis = {
@@ -45,7 +48,8 @@ const apis = {
     getPlaylistById,
     getPlaylistPairs,
     updatePlaylistById,
-    getAllUsersPlaylists
+    getAllUsersPlaylists,
+    getAllUsers,
 }
 
 export default apis

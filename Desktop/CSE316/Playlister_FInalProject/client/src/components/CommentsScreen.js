@@ -26,16 +26,16 @@ export default function CommentScreen(){
             sx={{ width: '100%', bgcolor: 'primary'}}
         >
         {
-            // store.songsToPlay.map((user, comments) => (
-            //     <Card
-            //         id={'playlist-song-' + (comments)}
-            //         key={'playlist-song-' + (comments)}
-            //         user={user}
-            //         comment={comments}
-            //     >
-            //         hello
-            //     </Card>
-            // ))  
+            ((store) => {
+                for(let userName in store.songsToPlay.comments){
+                    <Card
+                        id={'playlist-song-' + (userName)}
+                        key={'playlist-song-' + (userName)}
+                        userName={userName}
+                        comments={store.songsToPlay.comments[userName]}
+                    />
+                }
+            })
         }
         </List>  
         }

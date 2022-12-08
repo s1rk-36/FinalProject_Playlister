@@ -10,13 +10,48 @@ import PersonIcon from '@mui/icons-material/Person';
 import GroupsIcon from '@mui/icons-material/Groups';
 import TextField from '@mui/material/TextField';
 import SortIcon from '@mui/icons-material/Sort';
-import { Typography } from '@mui/material';
+import { Typography, Menu, MenuItem } from '@mui/material';
 
 
 export default function SecondBanner() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [searchResult, setSearchResult] = useState("");
+    const [anchorEl, setAnchorEl] = useState(null);
+    const isMenuOpen = Boolean(anchorEl);
+
+    const sortMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+    const menuId = 'primary-search-account-menu';
+
+    const sortMenu = 
+    <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            id={menuId}
+
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem >Name</MenuItem>
+            <MenuItem >Publish Date</MenuItem>
+            <MenuItem >Listens</MenuItem>
+            <MenuItem >Dislikes</MenuItem>
+
+        </Menu> 
 
     let homeBorder = ''
     let userPlaylists = ''
@@ -123,7 +158,13 @@ export default function SecondBanner() {
                         >SORT BY</Typography>
 
                         <SortIcon
-                        aria-label="owned lists"
+                        size="medium"
+                        edge="end"
+                        aria-haspopup="true"
+                        aria-label="account of current user"
+                        onClick={sortMenuOpen}
+                        color="inherit"
+                        aria-controls={menuId}
                         
                         sx={{fontSize: 45, paddingLeft: 2, color: "black", cursor: "pointer"}}
                         ></SortIcon>

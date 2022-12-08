@@ -285,7 +285,7 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     searchMode: payload,
                     searchArray: [],
-                    songsToPlay: [],
+                    songsToPlay: null,
                 });
             }
 
@@ -303,7 +303,7 @@ function GlobalStoreContextProvider(props) {
                     searchMode: store.searchMode,
                     searchResult: payload.searchResult,
                     searchArray: payload.idNamePairs,
-                    songsToPlay: store.songsToPlay,
+                    songsToPlay: null,
                 });
             }
 
@@ -311,9 +311,9 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    currentList: null,
+                    currentList: store.currentList,
                     currentSongIndex: -1,
-                    searchArray: [],
+                    searchArray: store.searchArray,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -382,6 +382,22 @@ function GlobalStoreContextProvider(props) {
                     });
                 }
             }
+            getListPairs(searchResult1);
+        }
+        else if(store.searchMode === 'allUsers'){
+            async function getListPairs() {
+                let response = await api.getAllUsers(searchResult1);
+                    if (response.data.success) {
+                        let pairsArray = response.data.idNamePairs;
+                        storeReducer({
+                            type: GlobalStoreActionType.DISPLAY_SEARCH,
+                            payload: {
+                                idNamePairs: pairsArray,
+                                searchResult: searchResult1
+                            }
+                        });
+                    }
+                }
             getListPairs(searchResult1);
         }
     }
@@ -459,6 +475,56 @@ function GlobalStoreContextProvider(props) {
     store.clearTransactions = function () {
         tps.clearAllTransactions();
     }
+
+    store.incrementLike = function(playlist){
+        playlist.likes.push(playlist.fullName);
+        async function updatePlaylist(playlist) {
+            let response = await api.updatePlaylistById(playlist._id, playlist);
+                if (response.data.success) {
+                  async function getListPairs(playlist) {
+                      response = await api.getPlaylistPairs();
+                      if (response.data.success) {
+                          let pairsArray = response.data.idNamePairs;
+                          storeReducer({
+                              type: GlobalStoreActionType.CHANGE_LIST_NAME_2,
+                              payload: {
+                                  idNamePairs: pairsArray,
+                                  playlist: playlist 
+                              }
+                          });
+                      }
+                  }
+                  getListPairs(playlist);
+                }
+              }
+            updatePlaylist(playlist);
+    }
+
+    store.incrementDislikes = function(playlist){
+        playlist.dislikes.push(playlist.fullName);
+        async function updatePlaylist(playlist) {
+            let response = await api.updatePlaylistById(playlist._id, playlist);
+                if (response.data.success) {
+                  async function getListPairs(playlist) {
+                      response = await api.getPlaylistPairs();
+                      if (response.data.success) {
+                          let pairsArray = response.data.idNamePairs;
+                          storeReducer({
+                              type: GlobalStoreActionType.CHANGE_LIST_NAME_2,
+                              payload: {
+                                  idNamePairs: pairsArray,
+                                  playlist: playlist 
+                              }
+                          });
+                      }
+                  }
+                  getListPairs(playlist);
+                }
+              }
+            updatePlaylist(playlist);
+    }
+
+
 
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function (mode, dupPlaylist = null) {

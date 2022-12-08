@@ -134,32 +134,73 @@ const HomeScreen = () => {
                 <div className="playlist-player">
                     
                     <div className='player-header'>
-                        <Button variant="contained">Player</Button>
-                        <Button variant="contained">Comments</Button>
-                        
-                        <div className='youtube'>
-                        <YouTubePlayerExample></YouTubePlayerExample>
-                        </div>
-    
+                        <Button variant="contained" onClick={changeToComments} sx={{bgcolor: selected}}>Player</Button>
+                        <Button variant="contained" onClick={changeToPlayer} sx={{bgcolor: comms}}>Comments</Button>
                     </div>
-    
-                    <div className='player-controls'>
-                        <div className='player-buttons'>
-                        <Box sx={{ flexGrow: 1 }}><PlayerButtons /></Box>
-                        </div>
-                    </div>
-    
-                      
+
+                    <Box sx={{visibility: playerScreen, position: 'absolute', display: 'flex', flexDirection: 'column',
+                        top: '7%', height: '75%', maxHeight: '75%', width: '100%', marginRight: 1}}>
+                    <YouTubePlayerExample></YouTubePlayerExample>
+                    </Box>
+                    <Box sx={{visibility: commentScreen, position: 'absolute', display: 'flex', flexDirection: 'column',
+                        top: '7%', height: '92.5%', width: '100%', marginRight: 1, bgcolor: 'grey'}}>
+                            <CommentScreen></CommentScreen>
+                    </Box>
+
                 </div>
-                
+                            
                     
             </div>
             )
     }
     else{
+        if (store && store.searchArray.length > 0 && store.searchResult) {
+            listCard = 
+                
+                    store.searchArray.map((pair) => (
+                        <ListCard
+                            key={pair._id}
+                            idNamePair={pair}
+                            selected={false}
+                        />
+                    ))
+        }
         return(
-            <div></div>
-        )
+            <div id="playlist-selector">
+                <div id="list-selector-heading">
+    
+                    {/* <Typography variant="h2" fontSize="30pt"><b>Your Lists</b></Typography> */}
+                </div>
+                
+    
+                <div id="list-selector-list">
+                    {
+                        listCard
+                    }
+                    <MUIDeleteModal />
+                </div>
+    
+                <div className="playlist-player">
+                    
+                    <div className='player-header'>
+                        <Button variant="contained" onClick={changeToComments} sx={{bgcolor: selected}}>Player</Button>
+                        <Button variant="contained" onClick={changeToPlayer} sx={{bgcolor: comms}}>Comments</Button>
+                    </div>
+
+                    <Box sx={{visibility: playerScreen, position: 'absolute', display: 'flex', flexDirection: 'column',
+                        top: '7%', height: '75%', maxHeight: '75%', width: '100%', marginRight: 1}}>
+                    <YouTubePlayerExample></YouTubePlayerExample>
+                    </Box>
+                    <Box sx={{visibility: commentScreen, position: 'absolute', display: 'flex', flexDirection: 'column',
+                        top: '7%', height: '92.5%', width: '100%', marginRight: 1, bgcolor: 'grey'}}>
+                            <CommentScreen></CommentScreen>
+                    </Box>
+
+                </div>
+                            
+                    
+            </div>
+            )
     }
    
 }

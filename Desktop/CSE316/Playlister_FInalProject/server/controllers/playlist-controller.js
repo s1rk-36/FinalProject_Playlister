@@ -196,6 +196,50 @@ getAllUsersPlaylists = async (req, res) => {
             }).catch(err => console.log(err))
 }
 
+getAllUsers = async (req, res) => {
+    console.log("ALl of my users playlistsss");
+    const body = JSON.stringify(req.body).slice(2, -5);
+    console.log(body);
+        await Playlist.find({}, (err, playlists) => {
+    
+                if (err) {
+                    return res.status(400).json({ success: false, error: err })
+                }
+                if (!playlists) {
+                    console.log("!playlists.length");
+                    return res
+                        .status(404)
+                        .json({ success: false, error: 'Playlists not found' })
+                }
+                else {
+                    console.log("Send the Playlist pairs");
+                    // PUT ALL THE LISTS INTO ID, NAME PAIRS
+                    let pairs = [];
+                    for (let key in playlists) {
+                        let list = playlists[key];
+                        if(list.fullName.includes(body) && list.public){
+                            let pair = {
+                                _id: list._id,
+                                name: list.name,          
+                                ownerEmail: list.ownerEmail,
+                                username: list.username,
+                                likes: list.likes,
+                                dislikes: list.dislikes,
+                                listens: list.listens,
+                                comments: list.comments,
+                                public: list.public,
+                                date: list.date,
+                                fullName: list.fullName,
+                            };
+                            pairs.push(pair);
+                        }
+                    }
+                    console.log(pairs)
+                    return res.status(200).json({ success: true, idNamePairs: pairs })
+                }
+            }).catch(err => console.log(err))
+}
+
 getPlaylists = async (req, res) => {
     await Playlist.find({}, (err, playlists) => {
         if (err) {
@@ -229,17 +273,23 @@ updatePlaylist = async (req, res) => {
                 message: 'Playlist not found!',
             })
         }
+
         list.name = body.playlist.name;
         list.songs = body.playlist.songs;
         list.date = body.playlist.date;
         if(body.playlist.public)
             list.public = body.playlist.public;
-        console.log("the body is someee" + body.playlist.public);
-        console.log(body.playlist.comments)
-        if (body.playlist.comments) {
 
+        if (body.playlist.comments) {
             list.comments = body.playlist.comments;
           }
+          if(body.playlist.likes){
+            list.likes = body.playlist.likes;
+          }
+          if(body.playlist.dislikes){
+            list.dislikes = body.playlist.dislikes;
+          }
+
         list
             .save()
             .then(() => {
@@ -285,5 +335,6 @@ module.exports = {
     getPlaylistPairs,
     getPlaylists,
     updatePlaylist,
-    getAllUsersPlaylists
+    getAllUsersPlaylists,
+    getAllUsers
 }
