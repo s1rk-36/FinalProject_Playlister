@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography'
 import { AppBar, Button, Grid } from '@mui/material';
 import YouTubePlayerExample from './YouTubePlaylisterReact/src/PlaylisterYouTubePlayer.js';
 import PlayerButtons from './PlayerButtons';
+import CommentScreen from './CommentsScreen';
 
 /*
     This React component lists all the top5 lists in the UI.
@@ -17,6 +18,10 @@ import PlayerButtons from './PlayerButtons';
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const [playerScreen, setPlayerScreen] = useState("");
+    const [commentScreen, setCommentScreen] = useState("hidden");
+    const [selected, setSelected] = useState("blue");
+    const [comms, setComms] = useState("");
 
     useEffect(() => {
         store.loadIdNamePairs();
@@ -28,6 +33,19 @@ const HomeScreen = () => {
     }
     let listCard = "";
 
+    function changeToPlayer() {
+        setPlayerScreen("hidden");
+        setCommentScreen("");
+        setSelected("");
+        setComms("blue");
+    }
+
+    function changeToComments() {
+        setPlayerScreen("");
+        setCommentScreen("hidden");
+        setSelected("blue");
+        setComms("");
+    }
 
     if(store.searchMode === 'home'){
         if (store && store.idNamePairs.length > 0) {
@@ -64,20 +82,22 @@ const HomeScreen = () => {
                     <MUIDeleteModal />
                 </div>
     
-    
                 <div className="playlist-player">
                     
                     <div className='player-header'>
-                        <Button variant="contained">Player</Button>
-                        <Button variant="contained">Comments</Button>
-                        
-                        {/* <div className='youtube'> */}
-                        {/* </div> */}
-    
+                        <Button variant="contained" onClick={changeToComments} sx={{bgcolor: selected}}>Player</Button>
+                        <Button variant="contained" onClick={changeToPlayer} sx={{bgcolor: comms}}>Comments</Button>
                     </div>
-                    <YouTubePlayerExample></YouTubePlayerExample>
 
-                      
+                    <Box sx={{visibility: playerScreen, position: 'absolute', display: 'flex', flexDirection: 'column',
+                        top: '7%', height: '75%', maxHeight: '75%', width: '100%', marginRight: 1}}>
+                    <YouTubePlayerExample></YouTubePlayerExample>
+                    </Box>
+                    <Box sx={{visibility: commentScreen, position: 'absolute', display: 'flex', flexDirection: 'column',
+                        top: '7%', height: '92.5%', width: '100%', marginRight: 1, bgcolor: 'grey'}}>
+                            <CommentScreen></CommentScreen>
+                    </Box>
+
                 </div>
                 
                     

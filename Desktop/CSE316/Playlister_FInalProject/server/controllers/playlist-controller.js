@@ -235,9 +235,10 @@ updatePlaylist = async (req, res) => {
         if(body.playlist.public)
             list.public = body.playlist.public;
         console.log("the body is someee" + body.playlist.public);
+        console.log(body.playlist.comments)
+        if (body.playlist.comments) {
 
-        if (body.comments) {
-            list.comments = body.comments;
+            list.comments = body.playlist.comments;
           }
         list
             .save()

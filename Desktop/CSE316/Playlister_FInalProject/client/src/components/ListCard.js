@@ -68,6 +68,13 @@ function ListCard(props) {
         }
     }
 
+    let highlighted = "";
+    if(store.songsToPlay){
+        if(store.songsToPlay._id === idNamePair._id)
+            highlighted ="inset";
+    }
+
+
     let collapseUPorDown = "";
     if(listOpen){
         collapseUPorDown =        
@@ -195,12 +202,13 @@ function ListCard(props) {
     }
     let cardElement =
     <div id='cards'>
-    <Card sx={{margin: 1}}>
+    <Card sx={{margin: 1, borderColor: 'purple', borderStyle: highlighted}}
+    >
     <CardContent sx={{p: 0}}/>
     <CardActions disableSpacing >
     <ListItem 
             // sx={{ display: 'flex', bgcolor: "white" }}
-            style={{fontSize: '18pt', height: "100px", width: "815px" }}
+            style={{fontSize: '18pt', height: "100px", width: "815px"}}
             id={idNamePair._id}
             key={idNamePair._id}
             // button

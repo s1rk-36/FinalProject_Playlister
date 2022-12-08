@@ -18,11 +18,14 @@ const playlistSchema = new Schema(
         likes: { type: [String], required: false },
         dislikes: { type: [String], required: false },
         listens: { type: Number, required: false },
-        comments: { type: [String], required: false },
+        comments: {
+            type: Map,
+            of: String,
+            default: {}
+        },
         public: { type: Boolean, required: false },
         date: { type: String, required: false },
         fullName: { type: String, required: true },
-
     },
     { timestamps: true },
 )

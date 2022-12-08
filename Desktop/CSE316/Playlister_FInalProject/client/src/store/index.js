@@ -35,6 +35,7 @@ export const GlobalStoreActionType = {
     SEARCH_MODE: "SEARCH_MODE",
     DISPLAY_SEARCH: "DISPLAY_SEARCH",
     PLAY_LIST: "PLAY_LIST",
+    CHANGE_LIST_NAME_2: "CHANGE_LIST_NAME_2",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -99,6 +100,24 @@ function GlobalStoreContextProvider(props) {
                     searchMode: store.searchMode,
                     searchArray: store.searchArray,
                     songsToPlay: store.songsToPlay,
+                });
+            }
+
+            case GlobalStoreActionType.CHANGE_LIST_NAME_2: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: payload.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: -1,
+                    searchArray: [],
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    searchMode: store.searchMode,
+                    searchArray: store.searchArray,
+                    songsToPlay: payload.playlist,
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -465,19 +484,18 @@ function GlobalStoreContextProvider(props) {
             }
         }
         newListName = tempName;
-        let fullname = auth.getFullName();
+
         payload = {
             name: newListName,
             songs: [],
             ownerEmail: auth.user.email,
-            username: auth.user.username,
             likes: [],
             dislikes: [],
             listens: 0,
             public: false,
-            comments: [],
+            comments: {},
             date: '',
-            fullName: fullname,
+            fullName: auth.getFullName(),
           };
         }
         else{
@@ -508,12 +526,11 @@ function GlobalStoreContextProvider(props) {
                 name: newListName,
                 songs: dupPlaylist.songs,
                 ownerEmail: auth.user.email,
-                username: auth.user.username,
                 likes: [],
                 dislikes: [],
                 listens: 0,
                 public: false,
-                comments: [],
+                comments: {},
                 date: '',
                 fullName: auth.getFullName(),
             };
@@ -539,6 +556,7 @@ function GlobalStoreContextProvider(props) {
             console.log("API FAILED TO CREATE A NEW LIST");
         }
     }
+
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = function () {
@@ -828,28 +846,37 @@ function GlobalStoreContextProvider(props) {
         return (store.currentList !== null);
     }
     
-    store.addComment = async function (id, list) {
-        async function updateList(playlist) {
-          let response = await api.updatePlaylistById(playlist._id, playlist);
+    store.addComment = async function (comment) {
+        async function getPlaylist() {
+          let response = await api.getPlaylistById(store.songsToPlay._id);
           if (response.data.success) {
-            async function getListPairs(playlist) {
-              response = await api.getPlaylistPairs();
+            let playlist = response.data.playlist;
+            playlist.comments[playlist.fullName] = comment;
+
+            async function updatePlaylist(playlist) {
+              response = await api.updatePlaylistById(playlist._id, playlist);
               if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-                storeReducer({
-                  type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                  payload: {
-                    idNamePairs: pairsArray,
-                    playlist: playlist,
-                  },
-                });
+                async function getListPairs(playlist) {
+                    response = await api.getPlaylistPairs();
+                    if (response.data.success) {
+                        let pairsArray = response.data.idNamePairs;
+                        storeReducer({
+                            type: GlobalStoreActionType.CHANGE_LIST_NAME_2,
+                            payload: {
+                                idNamePairs: pairsArray,
+                                playlist: playlist 
+                            }
+                        });
+                    }
+                }
+                getListPairs(playlist);
               }
             }
-            getListPairs(playlist);
+            updatePlaylist(playlist);
           }
         }
-        updateList(list);
-      };
+        getPlaylist();
+    };
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
     store.setIsListNameEditActive = function () {

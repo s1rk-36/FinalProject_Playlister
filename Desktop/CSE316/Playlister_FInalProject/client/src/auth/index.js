@@ -73,7 +73,7 @@ function AuthContextProvider(props) {
         const response = await api.getLoggedIn();
         if (response.status === 200) {
             authReducer({
-                type: AuthActionType.SET_LOGGED_IN,
+                type: AuthActionType.GET_LOGGED_IN,
                 payload: {
                     loggedIn: response.data.loggedIn,
                     user: response.data.user
@@ -144,9 +144,9 @@ function AuthContextProvider(props) {
     auth.getFullName = function() {
         let fullname = "";
         if (auth.user) {
-            fullname += auth.user.firstName + " " + auth.user.lastName;
+            fullname = auth.user.username;
         }
-        console.log("user initials: " + fullname);
+        // console.log(auth);
         return fullname;
     }
 
